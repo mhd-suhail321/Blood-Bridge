@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Color Palette */
+    --primary: #0F766E;
+    --primary-light: #CCFBF1;
+    --primary-bright: #14B8A6;
+    --navy: #0F172A;
+    --background: #ECF8F5;
+    --surface: #FFFFFF;
+    --surface-light: #F8FAFC;
+    --text-primary: #0F172A;
+    --text-secondary: #64748B;
+    --border: #E2E8F0;
+    --warning: #F59E0B;
+    --danger: #FB7185;
+    --success: #16A34A;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------
+   Bootstrap Overrides
+--------------------------------------- */
+
+/* Cards */
+.card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 12px;
+    font-weight: 500;
+    padding: 0.6rem 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--surface);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-bright);
+    border-color: var(--primary-bright);
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Forms */
+.form-control, .form-select {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 0.7rem 1rem;
+    color: var(--text-primary);
+    background-color: var(--surface-light);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-bright);
+    box-shadow: 0 0 0 0.25rem rgba(20, 184, 166, 0.25);
+    background-color: var(--surface);
+}
+
+/* Badges (Custom Soft Colors) */
+.badge {
+    border-radius: 20px;
+    padding: 0.4em 0.8em;
+    font-weight: 500;
+}
+.badge-soft-success { background-color: #DCFCE7; color: var(--success); }
+.badge-soft-warning { background-color: #FEF3C7; color: var(--warning); }
+.badge-soft-danger { background-color: #FFE4E6; color: var(--danger); }
+.badge-soft-primary { background-color: var(--primary-light); color: var(--primary); }
+.badge-soft-neutral { background-color: var(--surface-light); color: var(--text-secondary); border: 1px solid var(--border); }
+
+/* Typography Helpers */
+.text-navy { color: var(--navy) !important; }
+.text-teal { color: var(--primary) !important; }
+.text-muted-custom { color: var(--text-secondary) !important; }
+
+/* --------------------------------------
+   Custom App Components
+--------------------------------------- */
+
+/* Sidebar */
+.app-sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background-color: var(--surface);
+    border-right: 1px solid var(--border);
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 10px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+    background-color: var(--surface-light);
+    color: var(--navy);
+}
+
+.sidebar-link.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.sidebar-link i {
+    font-size: 1.1rem;
+}
+
+/* Navbar */
+.app-navbar {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    height: 70px;
+}
