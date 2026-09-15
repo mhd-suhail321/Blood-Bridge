@@ -9,7 +9,7 @@ import './index.css';
 
 // Import your Routes
 import AppRoutes from './routes/AppRoutes';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

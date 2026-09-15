@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Droplet } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authContext';
 
 export default function LoginPage() {
   // 1. Setup State
@@ -32,7 +32,7 @@ export default function LoginPage() {
       } else {
         setError('Invalid email or password (Try donor@example.com / password)');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred during login.');
     } finally {
       setLoading(false);
@@ -54,7 +54,7 @@ export default function LoginPage() {
             </div>
 
             {/* Login Card */}
-            <div className="card border-0 p-4 p-md-5" style={{ borderRadius: '20px' }}>
+            <div className="card border-0 p-4 p-md-5 shadow-sm" style={{ borderRadius: '20px' }}>
               <div className="mb-4 text-center">
                 <h4 className="fw-bold text-navy">Welcome back</h4>
                 <p className="text-muted-custom">Please enter your details to sign in.</p>
@@ -73,7 +73,7 @@ export default function LoginPage() {
                   <label className="form-label fw-medium text-navy">Email address</label>
                   <input 
                     type="email" 
-                    className="form-control form-control-lg" 
+                    className="form-control form-control-lg bg-surface-light border-0" 
                     placeholder="Enter your email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -88,7 +88,7 @@ export default function LoginPage() {
                   </label>
                   <input 
                     type="password" 
-                    className="form-control form-control-lg" 
+                    className="form-control form-control-lg bg-surface-light border-0" 
                     placeholder="••••••••" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -106,11 +106,20 @@ export default function LoginPage() {
                 </button>
               </form>
 
+              {/* User Signup Link */}
               <div className="text-center mt-3">
                 <p className="text-muted-custom m-0">
                   Don't have an account? <Link to="/register" className="text-teal text-decoration-none fw-medium">Sign up</Link>
                 </p>
               </div>
+
+              {/* NEW: Hospital Login Link */}
+              <div className="text-center mt-3 pt-3 border-top">
+                <p className="text-muted-custom small m-0">
+                  Are you a hospital administrator? <Link to="/hospital/login" className="text-navy fw-bold text-decoration-none">Hospital Portal</Link>
+                </p>
+              </div>
+
             </div>
 
           </div>

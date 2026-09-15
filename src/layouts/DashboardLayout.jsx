@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Droplet, Grid, User, Settings, LogOut, Bell, Search, 
-  HeartPulse, MapPin, Building, Archive, ClipboardList, ShieldCheck, Menu, X
-} from 'lucide-react';
+  HeartPulse, ClipboardList, ShieldCheck, Menu, Building, Archive
+} from 'lucide-react'; 
+import { useAuth } from '../context/authContext';
 
 export default function DashboardLayout({ children }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
   
-  // NEW: State to control the mobile menu
+  // Pull the current user from Context (Fallback to empty object if null)
+  const { user, logoutUser } = useAuth() || { user: null }; 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Fallback role to DONOR if building UI without logging in first
+  const userRole = user?.role || 'DONOR'; 
+  const userName = user?.name || 'Guest User';
 
   const getLinkStyles = (path) => {
     const isActive = currentPath === path;
@@ -23,50 +30,70 @@ export default function DashboardLayout({ children }) {
     return currentPath === path ? { backgroundColor: 'var(--primary-light)', color: 'var(--primary)' } : {};
   };
 
-  // NEW: We extract the links so we don't have to write them twice (once for desktop, once for mobile)
-  const renderNavLinks = () => (
-    <nav className="d-flex flex-column gap-1 flex-grow-1" onClick={() => setIsMobileMenuOpen(false)}>
-      
-      <div className="text-muted-custom small fw-bold mt-3 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>DONOR</div>
-      <Link to="/donor/dashboard" className={getLinkStyles('/donor/dashboard')} style={getActiveStyle('/donor/dashboard')}><Grid size={20} /> Dashboard</Link>
-      <Link to="/find-donors" className={getLinkStyles('/find-donors')} style={getActiveStyle('/find-donors')}><MapPin size={20} /> Find Donors</Link>
-      <Link to="/blood-requests" className={getLinkStyles('/blood-requests')} style={getActiveStyle('/blood-requests')}><ClipboardList size={20} /> Active Requests</Link>
+  const handleLogout = () => {
+    if (logoutUser) logoutUser();
+    navigate('/login');
+  };
 
-      <div className="text-muted-custom small fw-bold mt-4 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>RECIPIENT</div>
-      <Link to="/recipient/dashboard" className={getLinkStyles('/recipient/dashboard')} style={getActiveStyle('/recipient/dashboard')}><User size={20} /> My Requests</Link>
-      <Link to="/create-request" className={getLinkStyles('/create-request')} style={getActiveStyle('/create-request')}><HeartPulse size={20} /> Request Blood</Link>
+  // DYNAMIC SIDEBAR RENDERER based on role
+  const renderNavLinks = () => {
+    
+    // --- IF THE USER IS A HOSPITAL ---
+    if (userRole === 'HOSPITAL') {
+      return (
+        <nav className="d-flex flex-column gap-1 flex-grow-1" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="text-muted-custom small fw-bold mt-3 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>HOSPITAL PORTAL</div>
+          <Link to="/hospital/dashboard" className={getLinkStyles('/hospital/dashboard')} style={getActiveStyle('/hospital/dashboard')}><Building size={20} /> Dashboard</Link>
+          <Link to="/hospital/inventory" className={getLinkStyles('/hospital/inventory')} style={getActiveStyle('/hospital/inventory')}><Archive size={20} /> Blood Inventory</Link>
+          
+          <div className="text-muted-custom small fw-bold mt-4 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>ACCOUNT</div>
+          <Link to="/donor/settings" className={getLinkStyles('/donor/settings')} style={getActiveStyle('/donor/settings')}><Settings size={20} /> Settings</Link>
+        </nav>
+      );
+    }
 
-      <div className="text-muted-custom small fw-bold mt-4 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>HOSPITAL</div>
-      <Link to="/hospital/dashboard" className={getLinkStyles('/hospital/dashboard')} style={getActiveStyle('/hospital/dashboard')}><Building size={20} /> Hospital Dash</Link>
-      <Link to="/hospital/inventory" className={getLinkStyles('/hospital/inventory')} style={getActiveStyle('/hospital/inventory')}><Archive size={20} /> Inventory</Link>
+    // --- IF THE USER IS A DONOR OR RECIPIENT ---
+    return (
+      <nav className="d-flex flex-column gap-1 flex-grow-1" onClick={() => setIsMobileMenuOpen(false)}>
+        <div className="text-muted-custom small fw-bold mt-3 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>DONOR</div>
+        <Link to="/donor/dashboard" className={getLinkStyles('/donor/dashboard')} style={getActiveStyle('/donor/dashboard')}><Grid size={20} /> Dashboard</Link>
+        <Link to="/blood-requests" className={getLinkStyles('/blood-requests')} style={getActiveStyle('/blood-requests')}><ClipboardList size={20} /> Active Requests</Link>
 
-      <div className="text-muted-custom small fw-bold mt-4 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>ADMIN</div>
-      <Link to="/admin/dashboard" className={getLinkStyles('/admin/dashboard')} style={getActiveStyle('/admin/dashboard')}><ShieldCheck size={20} /> Admin Dash</Link>
+        <div className="text-muted-custom small fw-bold mt-4 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>RECIPIENT</div>
+        <Link to="/recipient/dashboard" className={getLinkStyles('/recipient/dashboard')} style={getActiveStyle('/recipient/dashboard')}><User size={20} /> My Requests</Link>
+        <Link to="/create-request" className={getLinkStyles('/create-request')} style={getActiveStyle('/create-request')}><HeartPulse size={20} /> Request Blood</Link>
 
-      <div className="text-muted-custom small fw-bold mt-4 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>ACCOUNT</div>
-      <Link to="/donor/profile" className={getLinkStyles('/donor/profile')} style={getActiveStyle('/donor/profile')}><User size={20} /> Profile</Link>
-      <Link to="/donor/settings" className={getLinkStyles('/donor/settings')} style={getActiveStyle('/donor/settings')}><Settings size={20} /> Settings</Link>
-    </nav>
-  );
+        <div className="text-muted-custom small fw-bold mt-4 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>ADMIN</div>
+        <Link to="/admin/dashboard" className={getLinkStyles('/admin/dashboard')} style={getActiveStyle('/admin/dashboard')}><ShieldCheck size={20} /> Admin Dash</Link>
+
+        <div className="text-muted-custom small fw-bold mt-4 mb-2 px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>ACCOUNT</div>
+        <Link to="/donor/profile" className={getLinkStyles('/donor/profile')} style={getActiveStyle('/donor/profile')}><User size={20} /> Profile</Link>
+        <Link to="/donor/settings" className={getLinkStyles('/donor/settings')} style={getActiveStyle('/donor/settings')}><Settings size={20} /> Settings</Link>
+      </nav>
+    );
+  };
 
   return (
     <div className="d-flex min-vh-100" style={{ backgroundColor: 'var(--background)' }}>
       
-      {/* 1. DESKTOP SIDEBAR (Hidden on screens smaller than large) */}
+      {/* 1. DESKTOP SIDEBAR */}
       <aside className="d-none d-lg-flex flex-column p-3 overflow-auto" style={{ width: '260px', backgroundColor: 'var(--surface)', borderRight: '1px solid var(--border)' }}>
         <div className="mb-4 px-3 d-flex align-items-center gap-2 mt-2">
           <Droplet size={26} style={{ color: 'var(--primary)' }} fill="currentColor" />
           <span className="fs-4 fw-bolder text-navy">BloodBridge</span>
         </div>
+        
+        {/* Render dynamic links based on role */}
         {renderNavLinks()}
+
         <div className="mt-4 pt-3 border-top border-light">
-          <button className="btn btn-link text-decoration-none text-muted-custom d-flex align-items-center gap-3 px-3 py-2 w-100 fw-medium hover-bg-light text-start">
+          <button onClick={handleLogout} className="btn btn-link text-decoration-none text-muted-custom d-flex align-items-center gap-3 px-3 py-2 w-100 fw-medium hover-bg-light text-start">
             <LogOut size={20} /> Logout
           </button>
         </div>
       </aside>
 
-      {/* 2. MOBILE OFFCANVAS SIDEBAR (Controlled by state) */}
+      {/* 2. MOBILE OFFCANVAS SIDEBAR */}
       {isMobileMenuOpen && (
         <>
           <div className="offcanvas-backdrop fade show" onClick={() => setIsMobileMenuOpen(false)}></div>
@@ -79,9 +106,12 @@ export default function DashboardLayout({ children }) {
               <button type="button" className="btn-close shadow-none" onClick={() => setIsMobileMenuOpen(false)}></button>
             </div>
             <div className="offcanvas-body d-flex flex-column p-3">
+              
+              {/* Render dynamic links based on role */}
               {renderNavLinks()}
+
               <div className="mt-4 pt-3 border-top border-light">
-                <button className="btn btn-link text-decoration-none text-muted-custom d-flex align-items-center gap-3 px-3 py-2 w-100 fw-medium hover-bg-light text-start">
+                <button onClick={handleLogout} className="btn btn-link text-decoration-none text-muted-custom d-flex align-items-center gap-3 px-3 py-2 w-100 fw-medium hover-bg-light text-start">
                   <LogOut size={20} /> Logout
                 </button>
               </div>
@@ -96,26 +126,24 @@ export default function DashboardLayout({ children }) {
         {/* 3. TOP NAVBAR */}
         <header className="d-flex justify-content-between align-items-center px-4 px-md-5 w-100" style={{ height: '76px', backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
           
-          {/* Mobile Hamburger Button */}
           <button className="btn btn-link d-lg-none p-0 text-navy" onClick={() => setIsMobileMenuOpen(true)}>
             <Menu size={28} />
           </button>
 
-          {/* Search (Hidden on Mobile) */}
           <div className="input-group d-none d-md-flex" style={{ maxWidth: '300px' }}>
             <span className="input-group-text bg-surface-light border-0 rounded-start-pill text-muted-custom ps-3"><Search size={18} /></span>
             <input type="text" className="form-control bg-surface-light border-0 rounded-end-pill shadow-none" placeholder="Search..." />
           </div>
           
-          {/* Right side: Notifications & Profile */}
           <div className="d-flex align-items-center gap-3 gap-md-4 ms-auto">
             <button className="btn btn-link text-muted-custom p-0 position-relative">
               <Bell size={22} />
               <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle"></span>
             </button>
             <div className="d-flex align-items-center gap-2 cursor-pointer">
-              <img src="https://ui-avatars.com/api/?name=Arun+Kumar&background=CCFBF1&color=0F766E" alt="User" className="rounded-circle" width="38" />
-              <span className="fw-bold text-navy d-none d-md-block">Arun Kumar</span>
+              {/* Dynamically show the logged-in user's name */}
+              <img src={`https://ui-avatars.com/api/?name=${userName.replace(' ', '+')}&background=CCFBF1&color=0F766E`} alt="User" className="rounded-circle" width="38" />
+              <span className="fw-bold text-navy d-none d-md-block">{userName}</span>
             </div>
           </div>
         </header>

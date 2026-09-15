@@ -8,12 +8,13 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import LandingPage from '../pages/public/LandingPage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage'; 
+import HospitalLogin from '../pages/auth/HospitalLogin'; // <-- Added Hospital Login import
+import NotFound from '../pages/public/NotFound';
 
 // Donor Pages
 import DonorDashboard from '../pages/donor/DonorDashboard';
-import FindDonors from '../pages/donor/FindDonors'; 
 import BloodRequests from '../pages/donor/BloodRequests'; 
-import UserProfile from '../pages/donor/UserProfile'; // <-- Imported
+import UserProfile from '../pages/donor/UserProfile'; 
 
 // Recipient Pages
 import RecipientDashboard from '../pages/recipient/RecipientDashboard'; 
@@ -24,29 +25,24 @@ import HospitalDashboard from '../pages/hospital/HospitalDashboard';
 import BloodInventory from '../pages/hospital/BloodInventory'; 
 
 // Admin Pages
-import AdminDashboard from '../pages/admin/AdminDashboard'; // <-- Imported
+import AdminDashboard from '../pages/admin/AdminDashboard'; 
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* =======================
-          PUBLIC ROUTES
-      ======================== */}
+      {/* PUBLIC ROUTES */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/hospital/login" element={<HospitalLogin />} /> {/* <-- Hospital Portal Route */}
       
-      {/* =======================
-          PROTECTED DASHBOARD ROUTES 
-          (Everything inside here gets the Navbar & Sidebar)
-      ======================== */}
+      {/* PROTECTED DASHBOARD ROUTES */}
       <Route element={<DashboardLayout />}>
         
         {/* Donor View */}
         <Route path="/donor/dashboard" element={<DonorDashboard />} />
-        <Route path="/find-donors" element={<FindDonors />} />
         <Route path="/blood-requests" element={<BloodRequests />} />
-        <Route path="/donor/profile" element={<UserProfile />} /> {/* <-- Added Route */}
+        <Route path="/donor/profile" element={<UserProfile />} />
 
         {/* Recipient View */}
         <Route path="/recipient/dashboard" element={<RecipientDashboard />} />
@@ -57,9 +53,12 @@ export default function AppRoutes() {
         <Route path="/hospital/inventory" element={<BloodInventory />} />
 
         {/* Admin View */}
-        <Route path="/admin/dashboard" element={<AdminDashboard />} /> {/* <-- Added Route */}
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
       </Route>
+
+      {/* CATCH-ALL ROUTE FOR 404 */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Plus, RefreshCw } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 
 export default function BloodInventory() {
   const inventory = [

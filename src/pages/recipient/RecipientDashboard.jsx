@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, Clock, CheckCircle, HeartPulse, User } from 'lucide-react';
+import { Activity, CheckCircle, HeartPulse, User } from 'lucide-react';
 
 export default function RecipientDashboard() {
   return (

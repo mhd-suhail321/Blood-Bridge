@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Droplet, MapPin, Clock, AlertCircle, Share2, Heart } from 'lucide-react';
+import { MapPin, Clock, AlertCircle, Share2, Heart } from 'lucide-react';
 
 export default function BloodRequests() {
   const [filter, setFilter] = useState('ALL');
